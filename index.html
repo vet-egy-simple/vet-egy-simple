@@ -399,32 +399,33 @@ function validate(){
   if(!okN){ $("#cname").focus(); return null; }
   if(!okP){ $("#cphone").focus(); return null; }
   store("vc_cust",{name,phone});
-  return {name,phone,notes:$("#cnotes").value.trim().replace(/[*_~`]/g,"")};
+  return {name,phone,notes:$("#cnotes").value.replace(/[*_~`]/g,"").trim()};
 }
 
 function buildMessage(c){
-  const L=[]; let n=0, ask=[];
-  const SEP="────────────";
-  L.push("*طلب جديد — "+BRAND+"*","");
-  L.push("*الاسم:* "+c.name,"*الموبايل:* "+c.phone);
+  const L=[]; let n=0, pieces=0, sum=0; const ask=[];
+  const SEP="▬▬▬▬▬▬▬▬▬▬";
+  const when=new Date().toLocaleString("en-GB",{timeZone:"Africa/Cairo",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false}).replace(",", " -");
+  L.push("🧾 *طلب جديد من قائمة الأسعار*","الشركة البيطرية","التاريخ: "+when,"");
+  L.push("👤 *الاسم:* "+c.name,"📞 *الموبايل:* "+c.phone);
   const tree=new Map();
   items.forEach(it=>{ const q=cart[it.key]; if(!q) return;
     if(!tree.has(it.main)) tree.set(it.main,new Map());
     const s=tree.get(it.main); if(!s.has(it.sub)) s.set(it.sub,[]); s.get(it.sub).push([it,q]); });
-  let sum=0, pieces=0;
   for(const [m,subs] of tree){
     L.push("",SEP,"*"+m+"*");
     for(const [sub,arr] of subs){
-      if(sub) L.push("_"+sub+"_");
+      if(sub) L.push("","_"+sub+"_");
       for(const [it,q] of arr){
         n++; pieces+=q;
-        if(it.price==null){ ask.push(it.name); L.push(n+") "+it.name+" — الكمية: "+q+" — السعر: عند الطلب"); }
-        else { const ln=Math.round(it.price*q*100)/100; sum+=ln; L.push(n+") "+it.name+" — "+q+" × "+fmt(it.price)+" = "+fmt(ln)+" ج"); }
+        L.push("▪ *"+it.name+"*");
+        if(it.price==null){ ask.push(it.name); L.push("الكمية "+q+" — السعر عند الطلب"); }
+        else { const ln=Math.round(it.price*q*100)/100; sum+=ln; L.push("الكمية "+q+" × "+fmt(it.price)+" = "+fmt(ln)+" ج"); }
       }
     }
   }
-  L.push("",SEP,"عدد الأصناف: "+n+" | عدد القطع: "+pieces,"*الإجمالي: "+fmt(sum)+" ج*");
-  if(ask.length) L.push("أصناف سعرها عند الطلب ومش محسوبة في الإجمالي: "+ask.join("، "));
+  L.push("",SEP,"عدد الأصناف: "+n,"عدد القطع: "+pieces,"💰 *الإجمالي: "+fmt(sum)+" ج*");
+  if(ask.length) L.push("","أصناف سعرها عند الطلب (غير محسوبة في الإجمالي): "+ask.join("، "));
   if(c.notes) L.push("","*ملاحظات:* "+c.notes);
   return L.join("\n");
 }
