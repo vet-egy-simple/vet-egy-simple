@@ -59,6 +59,9 @@ h1,h2,.disp{font-family:"Cairo","Segoe UI",Tahoma,sans-serif;font-weight:800}
 .logo img{width:100%;height:100%;display:block;border-radius:50%}
 .hero h1{margin:0;font-size:clamp(27px,7.4vw,38px);line-height:1.25;color:var(--brand-text)}
 .hero p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.store{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 2px 0;padding:12px 16px;border-radius:16px;color:var(--ink);text-decoration:none;font-size:14px;font-weight:600}
+.store b{color:var(--brand-text)}
+.store svg{width:20px;height:20px;flex:none;color:var(--brand-text)}
 .steps{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:12px}
 .step{display:flex;align-items:center;gap:6px;padding:5px 11px 5px 12px;border-radius:999px;font-size:12.5px;font-weight:700;
   background:var(--glass-strong);border:1px solid var(--glass-border)}
@@ -195,8 +198,10 @@ h1,h2,.disp{font-family:"Cairo","Segoe UI",Tahoma,sans-serif;font-weight:800}
     </div>
   </div>
 
+  <a class="store glass" href="https://vetegy.store" target="_blank" rel="noopener"><span>عاوز تشوف صورة المنتج؟ <b>تصفّح المتجر</b></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+
   <main id="list"></main>
-  <p class="note">الأسعار قابلة للتحديث حسب توفر الصنف. <span id="cntNote"></span></p>
+  <p class="note">الأسعار قابلة للتحديث حسب توفر الصنف. <span id="cntNote"></span> صور المنتجات في <a href="https://vetegy.store" target="_blank" rel="noopener" style="color:inherit;font-weight:700">المتجر</a>.</p>
 </div>
 
 <div class="bar" id="bar">
