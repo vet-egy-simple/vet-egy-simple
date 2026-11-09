@@ -282,7 +282,7 @@ function ctrlHTML(q){
     : `<button class="add" data-act="inc">+ أضف</button>`;
 }
 function priceHTML(it){
-  return it.price==null ? `<div class="price ask">اسأل عن السعر</div>` : `<div class="price">${fmt(it.price)}<small>ج.م</small></div>`;
+  return it.price==null ? `<div class="price ask">عند الطلب</div>` : `<div class="price">${fmt(it.price)}<small>ج.م</small></div>`;
 }
 
 function render(){
