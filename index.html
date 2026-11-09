@@ -121,7 +121,8 @@ h1,h2,.disp{font-family:"Lalezar","Plex",sans-serif;font-weight:400}
 .step-btn{width:34px;height:34px;border-radius:11px;background:var(--glass-strong);color:var(--ink);font-size:20px;font-weight:700;
   border:1px solid var(--line);display:grid;place-items:center;line-height:1;padding:0}
 .step-btn.plus{background:var(--brand);color:#fff;border-color:transparent}
-.q{min-width:26px;text-align:center;font-weight:700;font-size:15px}
+.q{width:56px;height:34px;text-align:center;font:inherit;font-weight:700;font-size:16px;color:var(--ink);padding:0;border-radius:10px;border:1px solid var(--line);background:var(--glass-strong);outline:none;-moz-appearance:textfield}
+.q:focus{border-color:#3f9bd0;box-shadow:0 0 0 3px rgba(63,155,208,.25)}
 .empty{text-align:center;color:var(--muted);padding:40px 10px;border-radius:var(--r)}
 
 /* cart bar */
@@ -276,7 +277,7 @@ function renderTabs(){
 
 function ctrlHTML(q){
   return q>0
-    ? `<button class="step-btn" data-act="dec" aria-label="إنقاص">−</button><span class="q">${q}</span><button class="step-btn plus" data-act="inc" aria-label="زيادة">+</button>`
+    ? `<button class="step-btn" data-act="dec" aria-label="إنقاص">−</button><input class="q" type="text" inputmode="numeric" pattern="[0-9]*" value="${q}" aria-label="الكمية" data-qty><button class="step-btn plus" data-act="inc" aria-label="زيادة">+</button>`
     : `<button class="add" data-act="inc">+ أضف</button>`;
 }
 function priceHTML(it){
@@ -333,14 +334,20 @@ function updateBar(){
   $("#barTotal").textContent = "الإجمالي: "+fmt(t.sum)+" ج.م";
 }
 
-function setQty(i,q){
-  const it=items[i]; q=Math.max(0,Math.min(999,q|0));
+function setQty(i,q,soft){
+  const it=items[i]; q=Math.max(0,Math.min(9999,q|0));
   if(q) cart[it.key]=q; else delete cart[it.key];
   store("vc_cart",cart);
   const row=document.querySelector(`.row[data-i="${i}"]`);
-  if(row){ row.classList.toggle("sel",q>0); row.querySelector(".ctrl").innerHTML=ctrlHTML(q); }
+  if(row){ row.classList.toggle("sel",q>0); if(!soft||q===0) row.querySelector(".ctrl").innerHTML=ctrlHTML(q); }
   updateBadges(); updateBar();
-  if($("#sheet").classList.contains("on")) renderSheet();
+  if($("#sheet").classList.contains("on")){
+    if(soft && q>0){
+      const sm=document.querySelector(`.line[data-i="${i}"] .sum`);
+      if(sm) sm.textContent = it.price==null ? "السعر عند الطلب" : q+" × "+fmt(it.price)+" = "+fmt(it.price*q)+" ج.م";
+      sheetTotals();
+    } else renderSheet();
+  }
 }
 
 $("#list").addEventListener("click",e=>{
@@ -367,6 +374,9 @@ function renderSheet(){
   $("#lines").innerHTML = rows.map(([it,i,q])=>`<div class="line" data-i="${i}">
     <div><div class="name">${esc(it.name)}</div><div class="sum">${it.price==null?"السعر عند الطلب":q+" × "+fmt(it.price)+" = "+fmt(it.price*q)+" ج.م"}</div></div>
     <div class="ctrl">${ctrlHTML(q)}</div></div>`).join("");
+  sheetTotals();
+}
+function sheetTotals(){
   const t=totals();
   $("#totVal").textContent=fmt(t.sum)+" ج.م";
   $("#totLabel").innerHTML = t.ask ? "الإجمالي<small>غير شامل "+t.ask+" صنف سعره عند الطلب</small>" : "الإجمالي";
@@ -375,6 +385,14 @@ $("#lines").addEventListener("click",e=>{
   const b=e.target.closest("[data-act]"); if(!b) return;
   const i=+b.closest(".line").dataset.i, cur=cart[items[i].key]||0;
   setQty(i, b.dataset.act==="inc"?cur+1:cur-1);
+});
+/* كتابة الكمية مباشرة */
+["#list","#lines"].forEach(sel=>{
+  const box=$(sel), isQ=el=>el.matches&&el.matches("input[data-qty]");
+  box.addEventListener("focusin",e=>{ if(isQ(e.target)) e.target.select(); });
+  box.addEventListener("input",e=>{ const t=e.target; if(!isQ(t)) return; const d=String(norm(t.value)).replace(/\D/g,"").slice(0,4); if(t.value!==d) t.value=d; });
+  box.addEventListener("keydown",e=>{ if(e.key==="Enter"&&isQ(e.target)){ e.preventDefault(); e.target.blur(); } });
+  box.addEventListener("change",e=>{ const t=e.target; if(!isQ(t)) return; const row=t.closest(".row,.line"); setQty(+row.dataset.i, parseInt(t.value,10)||0, true); if(t.isConnected&&t.value==="0") t.value=""; });
 });
 function openSheet(){
   const c=load("vc_cust",{}); $("#cname").value=c.name||""; $("#cphone").value=c.phone||"";
