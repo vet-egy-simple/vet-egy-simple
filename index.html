@@ -182,7 +182,7 @@ h1,h2,.disp{font-family:"Cairo","Segoe UI",Tahoma,sans-serif;font-weight:800}
     <p>اختار أصنافك واطلبها على واتساب في ثواني</p>
     <div class="steps">
       <span class="step"><b>1</b>اختار الأصناف</span>
-      <span class="step"><b>2</b>اكتب اسمك ورقمك</span>
+      <span class="step"><b>2</b>اكتب بياناتك</span>
       <span class="step"><b>3</b>ابعت على واتساب</span>
     </div>
   </header>
@@ -218,7 +218,8 @@ h1,h2,.disp{font-family:"Cairo","Segoe UI",Tahoma,sans-serif;font-weight:800}
     <div class="tot"><span id="totLabel">الإجمالي</span><b id="totVal"></b></div>
     <div class="field" id="fName"><label for="cname">الاسم <i>*</i></label><input id="cname" autocomplete="name" placeholder="اسمك بالكامل"><div class="err">اكتب اسمك (حرفين على الأقل)</div></div>
     <div class="field" id="fPhone"><label for="cphone">رقم الموبايل <i>*</i></label><input id="cphone" inputmode="tel" autocomplete="tel" placeholder="01xxxxxxxxx"><div class="err">اكتب رقم موبايل مصري صحيح (11 رقم يبدأ بـ 01)</div></div>
-    <div class="field"><label for="cnotes">ملاحظات (اختياري)</label><textarea id="cnotes" placeholder="عنوان التوصيل أو أي ملاحظة"></textarea></div>
+    <div class="field" id="fAddr"><label for="caddr">العنوان <i>*</i></label><input id="caddr" autocomplete="street-address" placeholder="المحافظة - المدينة - الشارع / علامة مميزة"><div class="err">اكتب عنوانك (5 حروف على الأقل)</div></div>
+    <div class="field"><label for="cnotes">ملاحظات (اختياري)</label><textarea id="cnotes" placeholder="أي ملاحظة على الطلب"></textarea></div>
     <div class="acts">
       <button class="btn wa" id="send">إرسال الطلب على واتساب</button>
       <button class="btn ghost" id="copy">نسخ الرسالة</button>
@@ -396,7 +397,7 @@ $("#lines").addEventListener("click",e=>{
   box.addEventListener("change",e=>{ const t=e.target; if(!isQ(t)) return; const row=t.closest(".row,.line"); setQty(+row.dataset.i, parseInt(t.value,10)||0, true); if(t.isConnected&&t.value==="0") t.value=""; });
 });
 function openSheet(){
-  const c=load("vc_cust",{}); $("#cname").value=c.name||""; $("#cphone").value=c.phone||"";
+  const c=load("vc_cust",{}); $("#cname").value=c.name||""; $("#cphone").value=c.phone||""; $("#caddr").value=c.addr||"";
   renderSheet(); $("#sheet").classList.add("on"); document.body.style.overflow="hidden";
 }
 function closeSheet(){ $("#sheet").classList.remove("on"); document.body.style.overflow=""; }
@@ -413,12 +414,14 @@ function normPhone(v){
 function validate(){
   const name=$("#cname").value.trim().replace(/[*_~`]/g,"");
   const phone=normPhone($("#cphone").value);
-  const okN=name.length>=2, okP=/^01[0125]\d{8}$/.test(phone);
-  $("#fName").classList.toggle("bad",!okN); $("#fPhone").classList.toggle("bad",!okP);
+  const addr=$("#caddr").value.trim().replace(/[*_~`]/g,"");
+  const okN=name.length>=2, okP=/^01[0125]\d{8}$/.test(phone), okA=addr.length>=5;
+  $("#fName").classList.toggle("bad",!okN); $("#fPhone").classList.toggle("bad",!okP); $("#fAddr").classList.toggle("bad",!okA);
   if(!okN){ $("#cname").focus(); return null; }
   if(!okP){ $("#cphone").focus(); return null; }
-  store("vc_cust",{name,phone});
-  return {name,phone,notes:$("#cnotes").value.replace(/[*_~`]/g,"").trim()};
+  if(!okA){ $("#caddr").focus(); return null; }
+  store("vc_cust",{name,phone,addr});
+  return {name,phone,addr,notes:$("#cnotes").value.replace(/[*_~`]/g,"").trim()};
 }
 
 function buildMessage(c){
@@ -426,7 +429,7 @@ function buildMessage(c){
   const SEP="▬▬▬▬▬▬▬▬▬▬";
   const when=new Date().toLocaleString("en-GB",{timeZone:"Africa/Cairo",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false}).replace(",", " -");
   L.push("🧾 *طلب جديد من قائمة الأسعار*","الشركة البيطرية","التاريخ: "+when,"");
-  L.push("👤 *الاسم:* "+c.name,"📞 *الموبايل:* "+c.phone);
+  L.push("👤 *الاسم:* "+c.name,"📞 *الموبايل:* "+c.phone,"📍 *العنوان:* "+c.addr);
   const tree=new Map();
   items.forEach(it=>{ const q=cart[it.key]; if(!q) return;
     if(!tree.has(it.main)) tree.set(it.main,new Map());
