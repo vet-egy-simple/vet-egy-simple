@@ -48,22 +48,27 @@ body.ed .card .x{display:block}
   <button class="sm" onclick="document.getElementById('frm').style.display='none'">إلغاء</button>
 </div></div>
 <script>
-var G=['الشركة البيطرية','المنصة (Vet Academy)','الإيميلات والملفات','عام'];
+var E6='abdelftahmagdy6@gmail.com',E2='abdelftahmagdy174185@gmail.com',E3='vetagypt11@gmail.com';
+var G=['الشركة البيطرية — على إيميل abdelftahmagdy6 (بروفايل Abdelftah6)',
+ 'منصة Vet Academy — على إيميل abdelftahmagdy6 (بروفايل Abdelftah6)',
+ 'إيميل abdelftahmagdy6 — الإيميل والملفات',
+ 'إيميل abdelftahmagdy174185 — سيارات وخزنة ونقدية (بروفايل El)',
+ 'إيميل vetagypt11 — تقارير الشركة'];
 var DEF=[
  {n:'فواتير المخزن',u:'https://vet-egy-simple.github.io/vet-egy-simple/app/',g:0},
  {n:'قائمة أسعار الشركة',u:'https://vet-egy-simple.github.io/vet-egy-simple/',g:0},
- {n:'شيت قائمة الأسعار',u:'https://docs.google.com/spreadsheets/d/1fwxGXilqhThq4ub-NOCi4gcp6E9bZX2YY-O8wzOaQz0/edit',g:0},
- {n:'كود سيستم الفواتير',u:'https://script.google.com/home/projects/1hst9UR7VwSl81VWIN1RcWKonIx56GEOOrc3-6HRbX5pWddm4caU-_T1F/edit',g:0},
+ {n:'شيت قائمة الأسعار',u:'https://docs.google.com/spreadsheets/d/1fwxGXilqhThq4ub-NOCi4gcp6E9bZX2YY-O8wzOaQz0/edit?authuser='+E6,g:0},
+ {n:'كود سيستم الفواتير',u:'https://script.google.com/home/projects/1hst9UR7VwSl81VWIN1RcWKonIx56GEOOrc3-6HRbX5pWddm4caU-_T1F/edit?authuser='+E6,g:0},
  {n:'متجر الشركة',u:'https://vetegy.store',g:0},
  {n:'موقع المنصة',u:'https://vetacademy.site',g:1},
  {n:'لوحة تحكم المنصة',u:'https://vetacademy.site/wp-admin',g:1},
- {n:'Gmail: abdelftahmagdy6',u:'https://mail.google.com/mail/?authuser=abdelftahmagdy6@gmail.com',g:2},
- {n:'Drive: abdelftahmagdy6',u:'https://drive.google.com/drive/?authuser=abdelftahmagdy6@gmail.com',g:2},
- {n:'Gmail: abdelftahmagdy174185',u:'https://mail.google.com/mail/?authuser=abdelftahmagdy174185@gmail.com',g:2},
- {n:'Drive: abdelftahmagdy174185',u:'https://drive.google.com/drive/?authuser=abdelftahmagdy174185@gmail.com',g:2},
- {n:'Gmail: vetagypt11',u:'https://mail.google.com/mail/?authuser=vetagypt11@gmail.com',g:2}
+ {n:'Gmail',u:'https://mail.google.com/mail/?authuser='+E6,g:2},
+ {n:'Drive',u:'https://drive.google.com/drive/?authuser='+E6,g:2},
+ {n:'Gmail',u:'https://mail.google.com/mail/?authuser='+E2,g:3},
+ {n:'Drive',u:'https://drive.google.com/drive/?authuser='+E2,g:3},
+ {n:'Gmail',u:'https://mail.google.com/mail/?authuser='+E3,g:4}
 ];
-var K='panelLinks1',L;
+var K='panelLinks2',L;
 try{L=JSON.parse(localStorage.getItem(K)||'null')}catch(e){L=null}
 if(!L)L=DEF.slice();
 function persist(){try{localStorage.setItem(K,JSON.stringify(L))}catch(e){}}
