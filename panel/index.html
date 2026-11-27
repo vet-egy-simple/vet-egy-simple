@@ -426,6 +426,10 @@ function delGroup(gi){
  if(L.some(function(x){return x.g===gi})){toast('القسم فيه روابط — انقلها أو احذفها الأول',1);return}
  mConfirm('تحذف القسم «'+esc(G[gi])+'»؟',function(){DEL.push(gi);persistG();draw();toast('اتحذف القسم')});
 }
+function restoreDef(){
+ var n=0;DEF.forEach(function(d){if(!L.some(function(x){return x.u===d.u&&x.g===d.g})){L.push({n:d.n,u:d.u,g:d.g});n++}});
+ DEL=DEL.filter(function(g){return g>=BASE});persistG();persistL();draw();toast(n?'اترجع '+n+' رابط':'كل الروابط الأساسية موجودة');
+}
 function toggleVO(){VO=!VO;try{localStorage.setItem('panelVO',VO?'1':'0')}catch(e){}draw();toast(VO?'الفتح على الإيميل الصح: شغال':'الفتح على الإيميل الصح: اتوقف')}
 function exportAll(){
  var keys=['panelLinks7','panelGroups1','panelExtra1','panelWho1','panelDel1','panelOrd1','panelCol1','panelFav1','panelRec1','panelVO'],o={};
@@ -477,7 +481,7 @@ document.addEventListener('click',function(e){
   e.stopPropagation();
   pop(b,[{id:'v',t:'الفتح على الإيميل الصح: '+(VO?'شغال':'متوقف'),ic:'check',fn:toggleVO},{id:'g',t:'قسم جديد',ic:'plus',fn:function(){mGroup(null)}},'-',
    {id:'o',t:'ترتيب الأقسام الافتراضي',ic:'reset',fn:function(){ORD=[];sv('panelOrd1',ORD);draw();toast('رجع الترتيب الافتراضي')}},
-   {id:'x',t:'تصدير نسخة احتياطية',ic:'dl',fn:exportAll},{id:'i',t:'استيراد نسخة احتياطية',ic:'ul',fn:function(){$('imp').click()}}]);
+   {id:'r',t:'استرجاع الروابط الأساسية الناقصة',ic:'link',fn:restoreDef},{id:'x',t:'تصدير نسخة احتياطية',ic:'dl',fn:exportAll},{id:'i',t:'استيراد نسخة احتياطية',ic:'ul',fn:function(){$('imp').click()}}]);
  }
 });
 $('md').addEventListener('submit',function(e){e.preventDefault();if(CUR)CUR()});
