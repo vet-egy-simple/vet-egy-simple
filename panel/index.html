@@ -94,10 +94,11 @@ var DEF=[
  {n:'واتساب ويب',u:'https://web.whatsapp.com/',g:5},
  {n:'فيسبوك',u:'https://www.facebook.com/',g:5}
 ];
+var P=(location.search.match(/[?&]p=(\w+)/)||[])[1]||'';var VIS=[0,1,2,3,4,5];
 var GK='panelGroups1';try{var gs=JSON.parse(localStorage.getItem(GK)||'null');if(gs&&gs.length===G.length)G=gs}catch(e){}
 var VOK='panelVO';var VO=true;try{VO=localStorage.getItem(VOK)!=='0'}catch(e){}
 function hr(u,gi){var w=WHO[gi];return (VO&&w)?'vetopen://'+w+'/?u='+encodeURIComponent(u):u}
-var K='panelLinks6',L;
+var K='panelLinks7',L;
 try{L=JSON.parse(localStorage.getItem(K)||'null')}catch(e){L=null}
 if(!L)L=DEF.slice();
 function persist(){try{localStorage.setItem(K,JSON.stringify(L))}catch(e){}}
