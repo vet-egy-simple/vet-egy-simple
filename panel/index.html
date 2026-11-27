@@ -21,8 +21,16 @@ section h2{margin:0 0 10px;font-size:16px;color:#164a5b;display:flex;justify-con
 .card:hover{border-color:#164a5b;background:#fff}
 .card b{display:block;font-size:15px;color:#164a5b}
 .card small{color:#6a7b82;font-size:12.5px;display:block;word-break:break-all;direction:ltr;text-align:right}
+.card .e{position:absolute;left:30px;top:6px;border:0;background:transparent;color:#164a5b;font-size:14px;display:none;padding:0 6px}
+body.ed .card .e{display:block}
+.gt{border:0;background:transparent;color:#164a5b;font:inherit;display:none;cursor:pointer}
+body.ed .gt{display:inline}
 .card .x{position:absolute;left:6px;top:6px;border:0;background:transparent;color:#a33;font-size:16px;display:none;padding:0 6px}
-body.ed .card .x{display:block}
+body.ed .card .e{position:absolute;left:30px;top:6px;border:0;background:transparent;color:#164a5b;font-size:14px;display:none;padding:0 6px}
+body.ed .card .e{display:block}
+.gt{border:0;background:transparent;color:#164a5b;font:inherit;display:none;cursor:pointer}
+body.ed .gt{display:inline}
+.card .x{display:block}
 .add{border:1px dashed #9fb3ba;background:transparent;color:#164a5b;border-radius:8px;padding:10px;min-height:56px}
 .sm{font-size:13px;border:1px solid #c5d2d7;background:#fff;border-radius:6px;padding:4px 10px;color:#164a5b}
 .empty{color:#8a979c;padding:6px 0}
@@ -52,7 +60,7 @@ var E6='abdelftahmagdy6@gmail.com',E2='abdelftahmagdy174185@gmail.com',E3='vetag
 var G=['الشركة البيطرية — على إيميل abdelftahmagdy6 (بروفايل Abdelftah6)',
  'منصة Vet Academy — على إيميل abdelftahmagdy6 (بروفايل Abdelftah6)',
  'إيميل abdelftahmagdy6 — الإيميل والملفات',
- 'إيميل abdelftahmagdy174185 — سيارات وخزنة ونقدية (بروفايل El)',
+ 'الشركة أمان — على إيميل abdelftahmagdy174185 (بروفايل El)',
  'إيميل vetagypt11 — تقارير الشركة'];
 var DEF=[
  {n:'Easy Orders — الطلبات',u:'https://app.easy-orders.net/#/orders',g:0},
@@ -68,11 +76,17 @@ var DEF=[
  {n:'لوحة تحكم المنصة',u:'https://vetacademy.site/wp-admin',g:1},
  {n:'Gmail',u:'https://mail.google.com/mail/?authuser='+E6,g:2},
  {n:'Drive',u:'https://drive.google.com/drive/?authuser='+E6,g:2},
+ {n:'نظام إدارة حركة السيارات والسائقين',u:'https://docs.google.com/spreadsheets/d/1_vXYJpM4GJMPbl9b78LPMCDYE4DJ2qgBI47EuBHaXrA/edit?authuser='+E2,g:3},
+ {n:'النقدية',u:'https://docs.google.com/spreadsheets/d/1nwihD8lS2oolJVAxhJh95yN-nWBWPuoi3Pnmgs3kDIA/edit?authuser='+E2,g:3},
+ {n:'دفتر الخزنة',u:'https://docs.google.com/spreadsheets/d/1xW5l2nNhiCKPzUQ4bnPscA-NvcMr5xq0JVtIcH_6Owg/edit?authuser='+E2,g:3},
+ {n:'مصروفات الشهر',u:'https://docs.google.com/spreadsheets/d/1ymyaWzn5z7lbhjGaO5aWzw36NluUQD-kWoDY6-8l5No/edit?authuser='+E2,g:3},
+ {n:'دليل المكاتب',u:'https://docs.google.com/spreadsheets/d/1Xi7_UvQh_wVYGvQNqlVdTnnFjXZHNdD78KNOqdkiBxo/edit?authuser='+E2,g:3},
  {n:'Gmail',u:'https://mail.google.com/mail/?authuser='+E2,g:3},
  {n:'Drive',u:'https://drive.google.com/drive/?authuser='+E2,g:3},
  {n:'Gmail',u:'https://mail.google.com/mail/?authuser='+E3,g:4}
 ];
-var K='panelLinks3',L;
+var GK='panelGroups1';try{var gs=JSON.parse(localStorage.getItem(GK)||'null');if(gs&&gs.length===G.length)G=gs}catch(e){}
+var K='panelLinks4',L;
 try{L=JSON.parse(localStorage.getItem(K)||'null')}catch(e){L=null}
 if(!L)L=DEF.slice();
 function persist(){try{localStorage.setItem(K,JSON.stringify(L))}catch(e){}}
@@ -83,14 +97,16 @@ function draw(){
   G.forEach(function(g,gi){
     var items=L.map(function(x,i){return{x:x,i:i}}).filter(function(o){return o.x.g===gi&&(!q||(o.x.n+' '+o.x.u).toLowerCase().indexOf(q)>-1)});
     if(q&&!items.length)return;
-    h+='<section><h2>'+esc(g)+'<button class="sm" onclick="openF('+gi+')">+ رابط</button></h2><div class="grid">'+
-      (items.map(function(o){return '<a class="card" href="'+esc(o.x.u)+'" target="_blank" rel="noopener"><button class="x" title="حذف" onclick="event.preventDefault();event.stopPropagation();del('+o.i+')">×</button><b>'+esc(o.x.n)+'</b><small>'+esc(host(o.x.u))+'</small></a>'}).join('')||'<div class="empty">لسه مفيش روابط</div>')+
+    h+='<section><h2><span>'+esc(g)+' <button class="gt" onclick="renG('+gi+')">✎ تعديل الاسم</button></span><button class="sm" onclick="openF('+gi+')">+ رابط</button></h2><div class="grid">'+
+      (items.map(function(o){return '<a class="card" href="'+esc(o.x.u)+'" target="_blank" rel="noopener"><button class="e" title="تعديل" onclick="event.preventDefault();event.stopPropagation();ren('+o.i+')">✎</button><button class="x" title="حذف" onclick="event.preventDefault();event.stopPropagation();del('+o.i+')">×</button><b>'+esc(o.x.n)+'</b><small>'+esc(host(o.x.u))+'</small></a>'}).join('')||'<div class="empty">لسه مفيش روابط</div>')+
       '</div></section>';
   });
   document.getElementById('m').innerHTML=h||'<div class="empty">مفيش نتائج</div>';
 }
 function openF(g){var s=document.getElementById('fg');s.innerHTML=G.map(function(x,i){return '<option value="'+i+'"'+(i===g?' selected':'')+'>'+esc(x)+'</option>'}).join('');document.getElementById('fn').value='';document.getElementById('fu').value='';document.getElementById('frm').style.display='flex'}
 function save(){var n=document.getElementById('fn').value.trim(),u=document.getElementById('fu').value.trim();if(!n||!u)return;if(!/^https?:\/\//i.test(u))u='https://'+u;L.push({n:n,u:u,g:+document.getElementById('fg').value});persist();document.getElementById('frm').style.display='none';draw()}
+function ren(i){var n=prompt('الاسم:',L[i].n);if(n===null)return;var u=prompt('الرابط:',L[i].u);if(u===null)return;n=n.trim();u=u.trim();if(n)L[i].n=n;if(u)L[i].u=u;persist();draw()}
+function renG(i){var n=prompt('اسم القسم:',G[i]);if(n===null||!n.trim())return;G[i]=n.trim();try{localStorage.setItem(GK,JSON.stringify(G))}catch(e){}draw()}
 function del(i){if(confirm('حذف الرابط؟')){L.splice(i,1);persist();draw()}}
 draw();
 </script>
