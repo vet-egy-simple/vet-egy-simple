@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#164a5b">
 <style>
 *{box-sizing:border-box}
+a.hb{text-decoration:none;font-size:14px}
 body{margin:0;background:#eef2f3;color:#1d2b30;font:15px/1.6 Tahoma,Arial,sans-serif}
 header{background:#164a5b;color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 header h1{margin:0;font-size:19px;font-weight:700;flex:1}
@@ -43,6 +44,7 @@ body.ed .gt{display:inline}
 <body>
 <header>
   <h1>لوحة الشغل</h1>
+  <a class="hb" href="?p=6">الشركة والمنصة</a><a class="hb" href="?p=el">أمان (بروفايل El)</a><a class="hb" href="?">الكل</a>
   <input id="q" placeholder="ابحث..." oninput="draw()">
   <button class="hb" onclick="document.body.classList.toggle('ed')">تعديل</button>
 </header>
@@ -85,8 +87,9 @@ var DEF=[
  {n:'Drive',u:'https://drive.google.com/drive/?authuser='+E2,g:3},
  {n:'Gmail',u:'https://mail.google.com/mail/?authuser='+E3,g:4}
 ];
+var P=(location.search.match(/[?&]p=(\w+)/)||[])[1]||'';var VIS=P==='el'?[3,4]:P==='6'?[0,1,2]:[0,1,2,3,4];
 var GK='panelGroups1';try{var gs=JSON.parse(localStorage.getItem(GK)||'null');if(gs&&gs.length===G.length)G=gs}catch(e){}
-var K='panelLinks4',L;
+var K='panelLinks5',L;
 try{L=JSON.parse(localStorage.getItem(K)||'null')}catch(e){L=null}
 if(!L)L=DEF.slice();
 function persist(){try{localStorage.setItem(K,JSON.stringify(L))}catch(e){}}
@@ -95,13 +98,14 @@ function host(u){try{return new URL(u).hostname}catch(e){return u}}
 function draw(){
   var q=document.getElementById('q').value.trim().toLowerCase(),h='';
   G.forEach(function(g,gi){
+    if(VIS.indexOf(gi)<0)return;
     var items=L.map(function(x,i){return{x:x,i:i}}).filter(function(o){return o.x.g===gi&&(!q||(o.x.n+' '+o.x.u).toLowerCase().indexOf(q)>-1)});
     if(q&&!items.length)return;
     h+='<section><h2><span>'+esc(g)+' <button class="gt" onclick="renG('+gi+')">✎ تعديل الاسم</button></span><button class="sm" onclick="openF('+gi+')">+ رابط</button></h2><div class="grid">'+
       (items.map(function(o){return '<a class="card" href="'+esc(o.x.u)+'" target="_blank" rel="noopener"><button class="e" title="تعديل" onclick="event.preventDefault();event.stopPropagation();ren('+o.i+')">✎</button><button class="x" title="حذف" onclick="event.preventDefault();event.stopPropagation();del('+o.i+')">×</button><b>'+esc(o.x.n)+'</b><small>'+esc(host(o.x.u))+'</small></a>'}).join('')||'<div class="empty">لسه مفيش روابط</div>')+
       '</div></section>';
   });
-  document.getElementById('m').innerHTML=h||'<div class="empty">مفيش نتائج</div>';
+  document.getElementById('m').innerHTML=(P==='el'?'<div class="empty">افتح الصفحة دي من بروفايل كروم El (إيميل abdelftahmagdy174185) عشان الشيتات تفتح بحسابه.</div>':P==='6'?'<div class="empty">افتح الصفحة دي من بروفايل كروم Abdelftah6 (إيميل abdelftahmagdy6).</div>':'')+(h||'<div class="empty">مفيش نتائج</div>');
 }
 function openF(g){var s=document.getElementById('fg');s.innerHTML=G.map(function(x,i){return '<option value="'+i+'"'+(i===g?' selected':'')+'>'+esc(x)+'</option>'}).join('');document.getElementById('fn').value='';document.getElementById('fu').value='';document.getElementById('frm').style.display='flex'}
 function save(){var n=document.getElementById('fn').value.trim(),u=document.getElementById('fu').value.trim();if(!n||!u)return;if(!/^https?:\/\//i.test(u))u='https://'+u;L.push({n:n,u:u,g:+document.getElementById('fg').value});persist();document.getElementById('frm').style.display='none';draw()}
