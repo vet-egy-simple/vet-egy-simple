@@ -55,9 +55,13 @@ var G=['الشركة البيطرية — على إيميل abdelftahmagdy6 (ب�
  'إيميل abdelftahmagdy174185 — سيارات وخزنة ونقدية (بروفايل El)',
  'إيميل vetagypt11 — تقارير الشركة'];
 var DEF=[
+ {n:'Easy Orders — الطلبات',u:'https://app.easy-orders.net/#/orders',g:0},
  {n:'فواتير المخزن',u:'https://vet-egy-simple.github.io/vet-egy-simple/app/',g:0},
- {n:'قائمة أسعار الشركة',u:'https://vet-egy-simple.github.io/vet-egy-simple/',g:0},
+ {n:'قائمة أسعار الشركة (الصفحة)',u:'https://vet-egy-simple.github.io/vet-egy-simple/',g:0},
  {n:'شيت قائمة الأسعار',u:'https://docs.google.com/spreadsheets/d/1fwxGXilqhThq4ub-NOCi4gcp6E9bZX2YY-O8wzOaQz0/edit?authuser='+E6,g:0},
+ {n:'CRM_Matrix_Orders_v2',u:'https://docs.google.com/spreadsheets/d/1L_zNXp6VyWhiUUSL45gbr9Kwb8wOGo2uv7W_PWfyNQ0/edit?authuser='+E6,g:0},
+ {n:'حجوزات الكتاكيت',u:'https://docs.google.com/spreadsheets/d/1TA_UfAp-0I8LDmPwVOz4OdKbvou0BN4VHs1KQDbMFeA/edit?authuser='+E6,g:0},
+ {n:'مصاريف بحرى',u:'https://docs.google.com/spreadsheets/d/1O-XokCCDKLaKq6nVCfMuOw6PiQRf5ee75R84O25ISno/edit?authuser='+E6,g:0},
  {n:'كود سيستم الفواتير',u:'https://script.google.com/home/projects/1hst9UR7VwSl81VWIN1RcWKonIx56GEOOrc3-6HRbX5pWddm4caU-_T1F/edit?authuser='+E6,g:0},
  {n:'متجر الشركة',u:'https://vetegy.store',g:0},
  {n:'موقع المنصة',u:'https://vetacademy.site',g:1},
@@ -68,7 +72,7 @@ var DEF=[
  {n:'Drive',u:'https://drive.google.com/drive/?authuser='+E2,g:3},
  {n:'Gmail',u:'https://mail.google.com/mail/?authuser='+E3,g:4}
 ];
-var K='panelLinks2',L;
+var K='panelLinks3',L;
 try{L=JSON.parse(localStorage.getItem(K)||'null')}catch(e){L=null}
 if(!L)L=DEF.slice();
 function persist(){try{localStorage.setItem(K,JSON.stringify(L))}catch(e){}}
