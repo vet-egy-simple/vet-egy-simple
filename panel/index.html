@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة شغل عبدالفتاح</title>
+<meta name="theme-color" content="#164a5b">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eef2f3;color:#1d2b30;font:15px/1.6 Tahoma,Arial,sans-serif}
+header{background:#164a5b;color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{margin:0;font-size:19px;font-weight:700;flex:1}
+#q{padding:8px 12px;border:0;border-radius:6px;min-width:200px;font:inherit}
+button{font:inherit;cursor:pointer}
+.hb{background:transparent;border:1px solid rgba(255,255,255,.6);color:#fff;border-radius:6px;padding:7px 12px}
+main{max-width:1100px;margin:0 auto;padding:16px}
+section{background:#fff;border:1px solid #dde5e8;border-radius:8px;margin-bottom:16px;padding:12px 14px}
+section h2{margin:0 0 10px;font-size:16px;color:#164a5b;display:flex;justify-content:space-between;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.card{display:block;text-decoration:none;color:inherit;border:1px solid #dde5e8;border-radius:8px;padding:10px 12px;background:#fafcfc;position:relative}
+.card:hover{border-color:#164a5b;background:#fff}
+.card b{display:block;font-size:15px;color:#164a5b}
+.card small{color:#6a7b82;font-size:12.5px;display:block;word-break:break-all;direction:ltr;text-align:right}
+.card .x{position:absolute;left:6px;top:6px;border:0;background:transparent;color:#a33;font-size:16px;display:none;padding:0 6px}
+body.ed .card .x{display:block}
+.add{border:1px dashed #9fb3ba;background:transparent;color:#164a5b;border-radius:8px;padding:10px;min-height:56px}
+.sm{font-size:13px;border:1px solid #c5d2d7;background:#fff;border-radius:6px;padding:4px 10px;color:#164a5b}
+.empty{color:#8a979c;padding:6px 0}
+#frm{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px}
+#frm div{background:#fff;border-radius:10px;padding:16px;max-width:380px;width:100%}
+#frm input,#frm select{width:100%;padding:8px;margin:4px 0 10px;border:1px solid #c5d2d7;border-radius:6px;font:inherit}
+#frm .pri{background:#164a5b;color:#fff;border:0;border-radius:6px;padding:8px 16px}
+</style>
+</head>
+<body>
+<header>
+  <h1>لوحة الشغل</h1>
+  <input id="q" placeholder="ابحث..." oninput="draw()">
+  <button class="hb" onclick="document.body.classList.toggle('ed')">تعديل</button>
+</header>
+<main id="m"></main>
+<div id="frm"><div>
+  <b>إضافة رابط</b><br>
+  <label>الاسم</label><input id="fn">
+  <label>الرابط</label><input id="fu" dir="ltr" placeholder="https://">
+  <label>القسم</label><select id="fg"></select>
+  <button class="pri" onclick="save()">حفظ</button>
+  <button class="sm" onclick="document.getElementById('frm').style.display='none'">إلغاء</button>
+</div></div>
+<script>
+var G=['الشركة البيطرية','المنصة (Vet Academy)','الإيميلات والملفات','عام'];
+var DEF=[
+ {n:'فواتير المخزن',u:'https://vet-egy-simple.github.io/vet-egy-simple/app/',g:0},
+ {n:'قائمة أسعار الشركة',u:'https://vet-egy-simple.github.io/vet-egy-simple/',g:0},
+ {n:'شيت قائمة الأسعار',u:'https://docs.google.com/spreadsheets/d/1fwxGXilqhThq4ub-NOCi4gcp6E9bZX2YY-O8wzOaQz0/edit',g:0},
+ {n:'كود سيستم الفواتير',u:'https://script.google.com/home/projects/1hst9UR7VwSl81VWIN1RcWKonIx56GEOOrc3-6HRbX5pWddm4caU-_T1F/edit',g:0},
+ {n:'متجر الشركة',u:'https://vetegy.store',g:0},
+ {n:'موقع المنصة',u:'https://vetacademy.site',g:1},
+ {n:'لوحة تحكم المنصة',u:'https://vetacademy.site/wp-admin',g:1},
+ {n:'Gmail: abdelftahmagdy6',u:'https://mail.google.com/mail/?authuser=abdelftahmagdy6@gmail.com',g:2},
+ {n:'Drive: abdelftahmagdy6',u:'https://drive.google.com/drive/?authuser=abdelftahmagdy6@gmail.com',g:2},
+ {n:'Gmail: abdelftahmagdy174185',u:'https://mail.google.com/mail/?authuser=abdelftahmagdy174185@gmail.com',g:2},
+ {n:'Drive: abdelftahmagdy174185',u:'https://drive.google.com/drive/?authuser=abdelftahmagdy174185@gmail.com',g:2},
+ {n:'Gmail: vetagypt11',u:'https://mail.google.com/mail/?authuser=vetagypt11@gmail.com',g:2}
+];
+var K='panelLinks1',L;
+try{L=JSON.parse(localStorage.getItem(K)||'null')}catch(e){L=null}
+if(!L)L=DEF.slice();
+function persist(){try{localStorage.setItem(K,JSON.stringify(L))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function host(u){try{return new URL(u).hostname}catch(e){return u}}
+function draw(){
+  var q=document.getElementById('q').value.trim().toLowerCase(),h='';
+  G.forEach(function(g,gi){
+    var items=L.map(function(x,i){return{x:x,i:i}}).filter(function(o){return o.x.g===gi&&(!q||(o.x.n+' '+o.x.u).toLowerCase().indexOf(q)>-1)});
+    if(q&&!items.length)return;
+    h+='<section><h2>'+esc(g)+'<button class="sm" onclick="openF('+gi+')">+ رابط</button></h2><div class="grid">'+
+      (items.map(function(o){return '<a class="card" href="'+esc(o.x.u)+'" target="_blank" rel="noopener"><button class="x" title="حذف" onclick="event.preventDefault();event.stopPropagation();del('+o.i+')">×</button><b>'+esc(o.x.n)+'</b><small>'+esc(host(o.x.u))+'</small></a>'}).join('')||'<div class="empty">لسه مفيش روابط</div>')+
+      '</div></section>';
+  });
+  document.getElementById('m').innerHTML=h||'<div class="empty">مفيش نتائج</div>';
+}
+function openF(g){var s=document.getElementById('fg');s.innerHTML=G.map(function(x,i){return '<option value="'+i+'"'+(i===g?' selected':'')+'>'+esc(x)+'</option>'}).join('');document.getElementById('fn').value='';document.getElementById('fu').value='';document.getElementById('frm').style.display='flex'}
+function save(){var n=document.getElementById('fn').value.trim(),u=document.getElementById('fu').value.trim();if(!n||!u)return;if(!/^https?:\/\//i.test(u))u='https://'+u;L.push({n:n,u:u,g:+document.getElementById('fg').value});persist();document.getElementById('frm').style.display='none';draw()}
+function del(i){if(confirm('حذف الرابط؟')){L.splice(i,1);persist();draw()}}
+draw();
+</script>
+</body>
+</html>
